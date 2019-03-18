@@ -133,7 +133,7 @@ public struct Binary: ExpressibleByArrayLiteral {
         var hexa = Array(hexaString)
         // pad with zeros on the left, case odd length.
         if hexa.count % 2 != 0 { hexa.insert("0", at: 0) }
-        return stride(from: 0, to: hexa.count, by: 2).flatMap {
+        return stride(from: 0, to: hexa.count, by: 2).compactMap {
             UInt8(String(hexa[$0..<$0.advanced(by: 2)]), radix: 16)
         }
     }
@@ -171,7 +171,9 @@ extension Binary: MutableCollection {
     /// - Parameter range: The range of indexes (the upperBound is not included)
     public subscript(bounds: Range<Binary.Index>) -> Binary.SubSequence {
         get {
-            let range = Range(bounds.lowerBound..<bounds.upperBound)
+            //let range = Range(bounds.lowerBound..<bounds.upperBound)
+            //https://stackoverflow.com/questions/52658744/swift-4-init-is-deprecated-countablerange-is-now-range?noredirect=1&lq=1
+            let range = bounds.lowerBound..<bounds.upperBound
             let subData = Data(self.data[range])
             return Binary(with: subData)
         }
@@ -181,29 +183,32 @@ extension Binary: MutableCollection {
         }
     }
 
-    /// Accesses the bytes at the specified range of indexes.
-    ///
-    /// - Parameter range: An open range of consecutive elements (e.g: 0..<5)
-    public subscript(bounds: CountableRange<Binary.Index>) -> Binary.SubSequence {
-        get {
-            return self[Range(bounds)]
-        }
-
-        set {
-            self[Range(bounds.lowerBound ..< bounds.upperBound)] = newValue
-        }
-    }
+//    /// Accesses the bytes at the specified range of indexes.
+//    ///
+//    /// - Parameter range: An open range of consecutive elements (e.g: 0..<5)
+//    public subscript(bounds: CountableRange<Binary.Index>) -> Binary.SubSequence {
+//        get {
+//            return self[Range(bounds)]
+//        }
+//
+//        set {
+//            self[Range(bounds.lowerBound ..< bounds.upperBound)] = newValue
+//        }
+//    }
 
     /// Accesses the bytes at the specified range of indexes.
     ///
     /// - Parameter range: A closed range (e.g: lowerBound...upperBound)
     public subscript(bounds: CountableClosedRange<Binary.Index>) -> Binary.SubSequence {
         get {
-            return self[Range(bounds.lowerBound..<bounds.upperBound + 1)]
+            //return self[Range(bounds.lowerBound..<bounds.upperBound + 1)]
+            //https://stackoverflow.com/questions/52658744/swift-4-init-is-deprecated-countablerange-is-now-range?noredirect=1&lq=1
+            return self[bounds.lowerBound..<bounds.upperBound + 1]
         }
 
         set {
-            self[Range(bounds.lowerBound..<bounds.upperBound + 1)] = newValue
+            //self[Range(bounds.lowerBound..<bounds.upperBound + 1)] = newValue
+            self[bounds.lowerBound..<bounds.upperBound + 1] = newValue
         }
     }
 }
